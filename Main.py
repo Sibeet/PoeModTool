@@ -1,4 +1,4 @@
 import sys
 from mainScreen import *
 
-init_screen("main.ui")
+init_screen('main.ui')

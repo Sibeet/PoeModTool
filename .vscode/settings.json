@@ -1,7 +1,7 @@
 {
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true,
-    "python.pythonPath": "C:\\Python37\\python.exe",
+    "python.pythonPath": "C:\\python37\\python.exe",
     "python.linting.pylintPath": "C:\\python37\\Scripts\\pylint.exe",
     "python.linting.pylintArgs": [
         "--extension-pkg-whitelist=PyQt5",
