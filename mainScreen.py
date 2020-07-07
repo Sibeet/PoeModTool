@@ -4,32 +4,45 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5 import uic
 from crowl import *
+from functools import partial
 
 def init_screen(ui_file):
-    #UI파일 연결
-    #단, UI파일은 Python 코드 파일과 같은 디렉토리에 위치해야한다.
-    form_class = uic.loadUiType(ui_file)[0]
 
+    form_class = uic.loadUiType(ui_file)[0]
+    class ModModel(QStandardItemModel):
+        def __init__(self, mod_group):
+            QStandardItemModel.__init__(self)
+
+            item = QStandardItem(mod_group[0][0])
+            child = QStandardItem(mod_group[0][1])
+            item.appendRow(child)
+            child = QStandardItem(mod_group[0][2])
+            item.appendRow(child)
+            self.setItem(0, 0, item)
 
     #화면을 띄우는데 사용되는 Class 선언
-    class WindowClass(QMainWindow, form_class) :
-        site = get_connection()
-        armour_list = get_armour_list('gloves', site)
-        tag_modifier = get_tag_modifier('gloves', site)
-        def __init__(self) :
+    class WindowClass(QMainWindow, form_class):
+        def __init__(self):
             super().__init__()
             self.setupUi(self)
 
-            self.GlovesButton.clicked.connect(self.set_ModGroupList)
+            self.GlovesButton.clicked.connect(lambda: self.set_prefix_list('Gloves')) 
+            self.GlovesButton.clicked.connect(lambda: self.set_suffix_list('Gloves'))
 
+        def set_prefix_list(self, item_type):
+            site = get_connection()
+            mod_group = get_mod_group_from_tag(item_type, site)
 
-        def set_ModGroupList(self):
-            data = ['a', 'b', 'c', 'd']
-            model = QStandardItemModel()
-            for val in data:
-                model.appendRow(QStandardItem(val))
+            model = ModModel(mod_group)
+            self.Prefix_List.setModel(model)
 
-            self.ModGroupList.setModel(model)
+        def set_suffix_list(self, item_type):
+            site = get_connection()
+            mod_group = get_mod_group_from_tag(item_type, site)
+
+            model = ModModel(mod_group)
+            self.Suffix_List.setModel(model)
+
 
 
     app = QApplication(sys.argv) 
